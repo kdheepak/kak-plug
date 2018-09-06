@@ -32,7 +32,7 @@ define-command -hidden plug-install -params 1 %{
         (
             python plug.py --install ${1}
             if [ $? -eq 0 ]; then
-                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Installed plugin ${1}'" | kak -p ${kak_session}
+                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information} this is the pwd: `pwd`'" | kak -p ${kak_session}
             else
                 printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Unable to install plugin ${1}. Something went wrong.'" | kak -p ${kak_session}
             fi
