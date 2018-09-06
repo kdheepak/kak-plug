@@ -1,12 +1,8 @@
 # kak-plug: Kakoune plugin manager
 # ===============================
 #
-# Download plug.kak and put it in ~/.config/kak/autoload
+#   git clone https://github.com/kdheepak/kak-plug.git ~/.config/kak/autoload/kak-plug/
 #
-#   curl -fLo ~/.config/kak/autoload/plug.kak --create-dirs \
-#     https://raw.githubusercontent.com/kdheepak/kak-plug/master/plug.kak
-#
-# Edit your ~/.config/kak/kakrc
 #
 # MIT License
 #
@@ -29,4 +25,18 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+declare-option -docstring "Folder where plugins will be installed" str plug_install_dir "$HOME/.config/kak/plugins"
+
+define-command -hidden plug-install -params 1 %{
+    nop %sh{
+        (
+            python plug.py --install ${1}
+            if [ $? -eq 0 ]; then
+                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Installed plugin ${1}'" | kak -p ${kak_session}
+            else
+                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Unable to install plugin ${1}. Something went wrong.'" | kak -p ${kak_session}
+            fi
+        ) >/dev/null 2>&1 </dev/null &
+   }
+}
 
