@@ -25,16 +25,17 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-declare-option -docstring "Folder where plugins will be installed" str plug_install_dir "$HOME/.config/kak/plugins"
+declare-option -docstring "Folder where plugins will be installed" str plugins_install_dir %sh{ echo "$HOME/.config/kak/plugins" }
+declare-option -docstring "Folder where kak-plug is installed" str kak_plug_dir %sh{ echo "$HOME/.config/kak/autoload/kak-plug" }
 
 define-command -hidden plug-install -params 1 %{
     nop %sh{
         (
-            python plug.py --install ${1}
+            python $kak_opt_kak_plug_dir/kak_plug/kak_plug.py --install ${1}
             if [ $? -eq 0 ]; then
-                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information} this is the pwd: `pwd`'" | kak -p ${kak_session}
+                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information} Installed ${1}'" | command kak -p ${kak_session}
             else
-                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Unable to install plugin ${1}. Something went wrong.'" | kak -p ${kak_session}
+                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Unable to install plugin ${1}. Something went wrong.'" | command kak -p ${kak_session}
             fi
         ) >/dev/null 2>&1 </dev/null &
    }
