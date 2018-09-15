@@ -14,7 +14,7 @@ h = logging.StreamHandler()
 h.setFormatter(formatter)
 logger.addHandler(h)
 
-h = logging.FileHandler(os.path.join(curdir, "plug.log"), "w")
+h = logging.FileHandler(os.path.join(curdir, "kak_plug.log"), "w")
 h.setFormatter(formatter)
 logger.addHandler(h)
 logger.setLevel(logging.DEBUG)
