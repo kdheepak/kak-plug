@@ -28,15 +28,10 @@
 declare-option -docstring "Folder where plugins will be installed" str plugins_install_dir %sh{ echo "$HOME/.config/kak/plugins" }
 declare-option -docstring "Folder where kak-plug is installed" str kak_plug_dir %sh{ echo "$HOME/.config/kak/autoload/kak-plug" }
 
-define-command -hidden plug-install -params 1 %{
+define-command plug -params 1 %{
     nop %sh{
         (
             python $kak_opt_kak_plug_dir/kak_plug/kak_plug.py --install ${1}
-            if [ $? -eq 0 ]; then
-                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information} Installed ${1}'" | command kak -p ${kak_session}
-            else
-                printf %s\\n "evaluate-commands -client $kak_client echo -markup '{Information}Unable to install plugin ${1}. Something went wrong.'" | command kak -p ${kak_session}
-            fi
         ) >/dev/null 2>&1 </dev/null &
    }
 }
