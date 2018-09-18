@@ -33,17 +33,10 @@ def clone(username, repo, hostname, kak_dir=None):
         )
     else:
         raise NotImplementedError("directory not customizable, contact the developer")
-    _update_plugins(plugin)
     if not os.path.exists(plugin):
         url = "https://{}/{}/{}.git".format(hostname, username, repo)
         p = subprocess.Popen(shlex.split("git clone {} {}".format(url, plugin)))
         p.wait()
-
-
-def _update_plugins(plugin):
-    with open(os.path.join(curdir, "plugins.txt"), "a") as f:
-        f.write(plugin)
-        f.write("\n")
 
 
 def install(argument, kak_dir, hostname):
@@ -59,14 +52,18 @@ def install(argument, kak_dir, hostname):
         raise NotImplementedError("Please contact the developer")
 
 
-def begin():
-    with open(os.path.join(curdir, "plugins.txt"), "w") as f:
-        f.write("")
-
-
-def end():
-    with open(os.path.join(curdir, "plugins.txt")) as f:
-        print(f.read())
+def update(arguments):
+    p_list = []
+    for plugin in arguments:
+        hostname = "github.com"
+        username, repo = plugin.replace("'", "").replace('"', "").split("/")
+        folder = os.path.join(
+            DIRECTORY, "plugins", "{}_{}_{}".format(hostname, username, repo)
+        )
+        p = subprocess.Popen(shlex.split("git pull"), cwd=os.path.join(folder))
+        p_list.append(p)
+    for p in p_list:
+        p.wait()
 
 
 def main():
@@ -86,26 +83,22 @@ def main():
     install_parser.add_argument("--kak-dir", dest="kak_dir")
     install_parser.add_argument("--hostname", dest="hostname")
 
-    begin_parser = subparsers.add_parser("begin", help="kak-plug begin manager")
-    end_parser = subparsers.add_parser("end", help="kak-plug end manager")
+    # begin_parser = subparsers.add_parser("begin", help="kak-plug begin manager")
+    # end_parser = subparsers.add_parser("end", help="kak-plug end manager")
 
-    uninstall_parser = subparsers.add_parser(
-        "uninstall", help="kak-plug uninstall manager"
-    )
-    uninstall_parser.add_argument("uninstall")
+    update_parser = subparsers.add_parser("update", help="kak-plug update manager")
+    update_parser.add_argument("update", nargs="+")
 
     logger.info("Parsing command line arguments ...")
 
     args = parser.parse_args()
 
-    logger.debug(args)
+    logger.info(args)
 
-    if args.command == "begin":
-        begin()
     if args.command == "install":
         install(args.install, args.kak_dir, args.hostname)
-    if args.command == "end":
-        end()
+    if args.command == "update":
+        update(args.update)
 
     return 0
 

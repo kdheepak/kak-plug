@@ -25,31 +25,27 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-declare-option -docstring "Folder where plugins will be installed" str plugins_install_dir %sh{ echo "$HOME/.config/kak/plugins" }
+declare-option str-list plugin_list
+
 declare-option -docstring "Folder where kak-plug is installed" str kak_plug_dir %sh{ echo "$HOME/.config/kak/autoload/kak-plug" }
-
-define-command plugBegin %{
-    nop %sh{
-        (
-            python $kak_opt_kak_plug_dir/kak_plug/kak_plug.py begin
-        ) >/dev/null 2>&1 </dev/null &
-    }
-}
-
-define-command plugEnd %{
-    nop %sh{
-        (
-            python $kak_opt_kak_plug_dir/kak_plug/kak_plug.py end
-        ) >/dev/null 2>&1 </dev/null &
-    }
-}
 
 
 define-command plug -params 1.. %{
+    set -add current plugin_list %arg{@}
     nop %sh{
         (
             python $kak_opt_kak_plug_dir/kak_plug/kak_plug.py install ${@}
         ) >/dev/null 2>&1 </dev/null &
    }
+}
+
+define-command plugUpdate %{
+    nop %sh{
+        (
+            echo $kak_opt_plugin_list
+            python $kak_opt_kak_plug_dir/kak_plug/kak_plug.py update $kak_opt_plugin_list
+        ) >/dev/null 2>&1 </dev/null &
+   }
+
 }
 
