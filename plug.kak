@@ -28,6 +28,15 @@
 declare-option -docstring "Folder where plugins will be installed" str plugins_install_dir %sh{ echo "$HOME/.config/kak/plugins" }
 declare-option -docstring "Folder where kak-plug is installed" str kak_plug_dir %sh{ echo "$HOME/.config/kak/autoload/kak-plug" }
 
+define-command plugBegin %{
+
+}
+
+define-command plugEnd %{
+
+}
+
+
 define-command plug -params 1.. %{
     nop %sh{
         (
