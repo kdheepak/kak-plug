@@ -52,12 +52,23 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="kak-plug manager")
-    parser.add_argument("--install", dest="install")
-    parser.add_argument("--kak-dir", dest="kak_dir")
+
+    subparsers = parser.add_subparsers()
+
+    install_parser = subparsers.add_parser("install", help="kak-plug install manager")
+    install_parser.add_argument("install")
+    install_parser.add_argument("--kak-dir", dest="kak_dir")
+    install_parser.add_argument("--url", dest="url")
+
+    install_parser = subparsers.add_parser(
+        "uninstall", help="kak-plug uninstall manager"
+    )
+    install_parser.add_argument("uninstall")
 
     args = parser.parse_args()
 
     install(args.install)
+
     return 0
 
 
