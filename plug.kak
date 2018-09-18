@@ -29,7 +29,6 @@ declare-option str-list plugin_list
 
 declare-option -docstring "Folder where kak-plug is installed" str kak_plug_dir %sh{ echo "$HOME/.config/kak/autoload/kak-plug" }
 
-
 define-command plug -params 1.. %{
     set -add current plugin_list %arg{@}
     nop %sh{
